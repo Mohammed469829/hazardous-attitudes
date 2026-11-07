@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hazardous Attitudes Check</title>
+<style>
+:root{--bg:#eef3f7;--card:#fff;--ink:#0f2a43;--mute:#546579;--line:#cfdae4;--acc:#1f6fb5;--on:#fff;--soft:#e3effa;--warn:#c4551a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1b2b;--card:#142a40;--ink:#e8f0f7;--mute:#93a7bb;--line:#2a4560;--acc:#5ab0f2;--on:#0d1b2b;--soft:#1b3a57;--warn:#f0a35a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d1b2b;--card:#142a40;--ink:#e8f0f7;--mute:#93a7bb;--line:#2a4560;--acc:#5ab0f2;--on:#0d1b2b;--soft:#1b3a57;--warn:#f0a35a;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:inherit}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font:17px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:660px;margin:0 auto;padding:22px 16px 56px}
+h1{font-size:2rem;line-height:1.15;margin:8px 0 12px;letter-spacing:-.02em}
+h2{font-size:1.2rem;line-height:1.4;margin:0 0 8px;font-weight:650}
+p{margin:0 0 12px}
+.mute{color:var(--mute);font-size:.92rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin-top:14px}
+.bar{height:6px;background:var(--line);border-radius:9px;overflow:hidden;margin:6px 0 4px}
+.bar i{display:block;height:100%;background:var(--acc);transition:width .3s}
+.opt{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;background:var(--card);color:var(--ink);border:1.5px solid var(--line);border-radius:10px;padding:13px 14px;margin-top:10px;font:inherit;font-size:.98rem;cursor:pointer}
+.opt .b{flex:none;width:30px;height:30px;border-radius:50%;border:1.5px dashed var(--mute);display:grid;place-items:center;font-weight:700;color:var(--on)}
+.opt.on{border-color:var(--acc);background:var(--soft)}
+.opt.on .b{background:var(--acc);border-color:var(--acc)}
+.nav{display:flex;gap:10px;justify-content:space-between;margin-top:16px}
+.btn{font:inherit;font-weight:600;border:0;border-radius:10px;padding:12px 22px;background:var(--acc);color:var(--on);cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.row{margin-top:20px}
+.row .hd{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.row .hd b{font-size:1.05rem}
+.row .hd span{font-weight:700;font-size:1.05rem}
+.track{position:relative;height:14px;background:var(--line);border-radius:9px;margin:6px 0 8px}
+.fill{height:100%;background:var(--mute);border-radius:9px}
+.fill.top{background:var(--warn)}
+.mid{position:absolute;left:50%;top:-4px;bottom:-4px;border-left:2px dashed var(--ink);opacity:.55}
+.anti{margin:0;font-size:.95rem}
+.scale{display:flex;justify-content:space-between;font-size:.8rem;color:var(--mute)}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const K=["Anti-Authority","Impulsivity","Invulnerability","Macho","Resignation"];
+const INFO=[
+["“Don’t tell me what to do.”","Treating rules and procedures as something for other pilots.","Follow the rules. They are usually right."],
+["“Do something—quickly!”","Acting at once instead of thinking the choice through.","Not so fast. Think first."],
+["“It won’t happen to me.”","Believing accidents are something that happen to other pilots.","It could happen to me."],
+["“I can do it.”","Taking risks to prove you are capable.","Taking chances is foolish."],
+["“What’s the use?”","Feeling the outcome is out of your hands.","I’m not helpless. I can make a difference."]];
+/* Each situation: [prompt, [Anti-Authority, Impulsivity, Invulnerability, Macho, Resignation]] */
+const S=[
+["You’re 30 minutes from home in marginal VFR. The cloud base ahead is lowering, and a turn-back is still easy. You press on. Why?",
+["Minimums are written for average pilots, not someone with your hours.","Replanning sounds like a hassle, so you keep going and figure it out later.","Weather like this has never caught you out before.","Turning around would feel like admitting you can’t handle it.","The weather is what it is; whatever happens, happens."]],
+["Your planned fuel is cutting it fine, but the gauges still show enough for the leg. You skip the top-off. Why?",
+["Reserve requirements are padded, and you know your airplane better than the regulators do.","Fueling takes twenty minutes and you want to be airborne now.","You’ve never run short of fuel, so why would today be different?","A good pilot can stretch a tank; asking for more feels like poor planning.","Once you’re airborne, fuel is out of your hands anyway."]],
+["A caution light flickers during preflight. You tap the switch, it goes out, and you launch. Why?",
+["Grounding rules are written by lawyers and ignore common sense.","It cleared, so you head out without thinking any further.","Aircraft problems happen to other people’s planes.","Cancelling over a light would look timid in front of everyone waiting.","Maintenance never fixes everything, so something is always wrong."]],
+["ATC offers a runway with a tailwind just above your airplane’s limit. You accept it. Why?",
+["The tailwind limit is a conservative number; you’ll handle it your own way.","You say ‘accept’ before you’ve done any math.","You’ve landed with a tailwind before and nothing came of it.","Asking for another runway would sound like you can’t handle a little wind.","The controller runs the show, so you go along with it."]],
+["After a long day you decide to fly home at night instead of staying over, even though you feel tired. Why?",
+["Self-assessment checklists are box-ticking for students.","You want to be home now and don’t stop to consider other options.","Fatigue accidents are something that happens to other pilots.","Staying would feel like giving up; you can push through.","You’d be tired either way, so planning doesn’t change much."]],
+["Friends ask for a low pass over their lake house. You agree. Why?",
+["Minimum altitude rules are for pilots less precise than you.","They ask, you say yes, and you’re already descending.","Low flying looks risky, but nothing will go wrong with you at the controls.","You want them to see you’re not the cautious type.","They want it so badly and you don’t see a way to say no."]],
+["Gusts exceed your airplane’s demonstrated crosswind figure. You attempt the landing rather than divert. Why?",
+["A demonstrated figure is just what some test pilot managed; you can exceed it.","You’re already on short final and never consider a go-around.","Gusty landings have always turned out fine for you.","Diverting would mean the wind beat you.","The wind does what it wants; you just hold on and hope."]],
+["Running late, you skip the before-takeoff checklist and go from memory. Why?",
+["Checklists exist to protect manufacturers from lawsuits.","You rush through it to get into the departure queue.","This airplane has never given you trouble on takeoff.","Real pros don’t need to read a card.","If something were wrong, a checklist wouldn’t have saved you anyway."]],
+["A fellow pilot warns that density altitude is too high for a loaded takeoff from a short strip. You go anyway. Why?",
+["Performance charts are written for new pilots, not for you.","You make a quick mental estimate and go before it gets hotter.","Hot, heavy takeoffs have always worked out before.","You’d rather prove the airplane can do it than offload a bag.","Conditions are what they are, and you can’t change the airport."]],
+["Your briefing shows afternoon thunderstorms along the route. You depart late anyway. Why?",
+["Briefers are overly cautious, so you’ll trust your own judgment instead.","You decide in the moment and sort out the weather in the air.","You’ve slipped past storms before without any trouble.","Waiting for another day would mean letting the weather push you around.","Forecasts are always wrong anyway, so there’s no point over-planning."]]
+];
+const app=document.getElementById("app");
+let st;
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+function reset(){st={i:-1,ord:S.map(()=>shuf([0,1,2,3,4])),rk:S.map(()=>[])};render()}
+function render(){window.scrollTo(0,0);st.i<0?intro():st.i>=S.length?result():quiz()}
+function intro(){
+app.innerHTML=`<div class="wrap"><h1>Hazardous attitudes check</h1>
+<p>The FAA names five attitudes that quietly lead pilots into bad decisions: anti-authority, impulsivity, invulnerability, macho and resignation. This check shows which ones you lean toward.</p>
+<div class="card"><h2>How it works</h2>
+<p>You’ll read 10 short situations. In each one a pilot makes a poor decision, and you rank five possible reasons from the one most like your own thinking to the one least like it. There are no right answers, and it takes about three minutes.</p>
+<p class="mute">For training and self-reflection only. Based on the hazardous attitudes in FAA Advisory Circular 60-22, Aeronautical Decision Making. Not FAA material and not operational guidance.</p>
+<button class="btn" id="go">Start</button></div></div>`;
+document.getElementById("go").onclick=()=>{st.i=0;render()}}
+function quiz(){
+const i=st.i,s=S[i],r=st.rk[i],done=r.length===5,last=i===S.length-1;
+app.innerHTML=`<div class="wrap"><p class="mute" aria-live="polite">Situation ${i+1} of ${S.length}</p>
+<div class="bar"><i style="width:${(i+(done?1:0))/S.length*100}%"></i></div>
+<div class="card"><h2>${s[0]}</h2>
+<p class="mute">Tap the reasons in order: first the one most like your thinking (5 points), last the least like it (1 point). Tap a ranked reason to start over.</p>
+${st.ord[i].map(k=>{const p=r.indexOf(k);return `<button class="opt${p>=0?" on":""}" data-k="${k}"><span class="b">${p>=0?5-p:""}</span><span>${s[1][k]}</span></button>`}).join("")}</div>
+<div class="nav"><button class="btn ghost" id="bk"${i?"":" disabled"}>Back</button><button class="btn" id="nx"${done?"":" disabled"}>${last?"See my profile":"Next"}</button></div></div>`;
+app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{const k=+b.dataset.k;if(r.includes(k))st.rk[i]=[];else r.push(k);quiz()});
+document.getElementById("bk").onclick=()=>{st.i--;render()};
+document.getElementById("nx").onclick=()=>{st.i++;render()}}
+function result(){
+const t=[0,0,0,0,0];st.rk.forEach(r=>r.forEach((k,p)=>t[k]+=5-p));
+const mx=Math.max(...t),order=[0,1,2,3,4].sort((a,b)=>t[b]-t[a]);
+const tops=order.filter(k=>t[k]===mx).map(k=>K[k]).join(" and ");
+app.innerHTML=`<div class="wrap"><h1>Your profile</h1>
+<p>You scored highest on <b>${tops}</b>. Each score runs from 10 to 50, and the dashed line marks an even split at 30. A higher score means that way of thinking is more tempting to you.</p>
+${order.map(k=>`<div class="row"><div class="hd"><b>${K[k]}</b><span>${t[k]}</span></div>
+<div class="track"><div class="fill${t[k]===mx?" top":""}" style="width:${(t[k]-10)/40*100}%"></div><div class="mid"></div></div>
+<p class="anti"><span class="mute">${INFO[k][0]} ${INFO[k][1]}</span><br>Antidote: <b>${INFO[k][2]}</b></p></div>`).join("")}
+<div class="scale"><span>10</span><span>30</span><span>50</span></div>
+<div class="card"><p>A high score doesn’t mean you’ll act this way. Noticing the thought is the first step; the antidote is how you answer it. Scores add up to ${t.reduce((a,b)=>a+b)}.</p>
+<button class="btn" id="re">Retake</button></div></div>`;
+document.getElementById("re").onclick=reset}
+reset();
+</script>
+</body>
+</html>
